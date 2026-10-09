@@ -12,9 +12,9 @@
   --el-accent-line: rgba(205, 101, 41, 0.35);
 
   --el-bg: #0f0f0f;
-  --el-card: #15171a;
-  --el-card-2: #1a1c20;
-  --el-input: #0f1013;
+  --el-card: #0f0f0f;
+  --el-card-2: #0f0f0f;
+  --el-input: #0f0f0f;
 
   --el-border: rgba(255, 255, 255, 0.06);
   --el-border-strong: rgba(255, 255, 255, 0.1);
@@ -235,7 +235,7 @@ button { cursor: pointer; border: none; background: none; }
   flex: none;
   border-radius: var(--el-radius);
   border: 1px dashed var(--el-border-strong);
-  background: rgba(15, 16, 19, 0.7);
+  background: var(--el-bg);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -259,7 +259,7 @@ button { cursor: pointer; border: none; background: none; }
   font-size: 10.5px;
   font-weight: 700;
   color: var(--el-text-2);
-  background: rgba(10, 11, 13, 0.85);
+  background: var(--el-bg);
   border: 1px solid var(--el-border-strong);
   font-variant-numeric: tabular-nums;
   display: none;
