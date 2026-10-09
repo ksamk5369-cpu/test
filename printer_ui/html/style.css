@@ -110,7 +110,7 @@ button { cursor: pointer; border: none; background: none; }
   gap: 14px;
   padding: 16px 18px;
   border-bottom: 1px solid var(--el-border);
-  background: linear-gradient(180deg, rgba(17, 18, 21, 0.96), rgba(13, 14, 17, 0.92));
+  background: var(--el-bg);
 }
 
 .el-brand-mark {
