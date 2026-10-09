@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Empire Line Printer</title>
+  <!-- Fonts and icons are bundled locally: the UI works without internet access. -->
+  <link rel="stylesheet" href="vendor/manrope/manrope.css">
+  <link rel="stylesheet" href="vendor/fontawesome/css/fontawesome.min.css">
+  <link rel="stylesheet" href="vendor/fontawesome/css/solid.min.css">
+  <link rel="stylesheet" href="vendor/fontawesome/css/regular.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Notifications -->
+  <div class="el-toasts" id="el-toasts" aria-live="polite"></div>
+
+  <!-- Connecting indicator -->
+  <div class="el-connecting" id="el-connecting">
+    <div class="el-spinner"></div>
+    <span id="el-connecting-label">Connecting to printer</span>
+  </div>
+
+  <!-- Placement controls -->
+  <div class="el-placement" id="el-placement" data-valid="false">
+    <span class="el-placement-state"><i class="fa-solid fa-circle"></i><span id="el-placement-state">Invalid position</span></span>
+    <div class="el-placement-keys">
+      <span><kbd class="el-key">E</kbd> Place</span>
+      <span><kbd class="el-key"><i class="fa-solid fa-arrow-left"></i></kbd><kbd class="el-key"><i class="fa-solid fa-arrow-right"></i></kbd> Rotate</span>
+      <span><kbd class="el-key">Backspace</kbd> Cancel</span>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="el-overlay" id="el-dashboard">
+    <section class="el-app" role="dialog" aria-modal="true" aria-labelledby="el-printer-name">
+      <header class="el-header">
+        <div class="el-brand">
+          <div class="el-brand-mark">EL</div>
+          <div class="el-brand-text">
+            <span class="el-eyebrow">Empire Line &middot; Printer</span>
+            <h1 class="el-page-title" id="el-printer-name">Printer</h1>
+          </div>
+        </div>
+        <span class="el-status" id="el-status" data-tone="ok">Ready</span>
+        <div class="el-header-actions">
+          <button class="el-btn el-btn-icon" id="el-refresh" data-tip="Refresh"><i class="fa-solid fa-rotate-right"></i></button>
+          <button class="el-btn el-btn-icon" id="el-close" data-tip="Close (Esc)"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </header>
+
+      <div class="el-body">
+        <nav class="el-sidebar">
+          <div class="el-nav">
+            <div class="el-nav-label">Workspace</div>
+            <button class="el-nav-item" data-tab="create"><i class="fa-solid fa-pen-to-square"></i><span>Create</span></button>
+            <button class="el-nav-item" data-tab="documents"><i class="fa-solid fa-folder-open"></i><span>Documents</span><em class="el-nav-badge" id="el-badge-documents">0</em></button>
+            <button class="el-nav-item" data-tab="queue"><i class="fa-solid fa-layer-group"></i><span>Print Queue</span><em class="el-nav-badge el-hidden" id="el-badge-queue">0</em></button>
+            <button class="el-nav-item" data-tab="printer"><i class="fa-solid fa-screwdriver-wrench"></i><span>Printer</span></button>
+          </div>
+
+          <div class="el-meters">
+            <div class="el-section-label">Supplies</div>
+            <div class="el-meter" id="el-meter-paper">
+              <div class="el-meter-head"><span class="el-meter-name"><i class="fa-regular fa-file"></i><span>Paper</span></span><span class="el-meter-value">-</span></div>
+              <div class="el-meter-track"><div class="el-meter-fill"></div></div>
+            </div>
+            <div class="el-meter" id="el-meter-ink">
+              <div class="el-meter-head"><span class="el-meter-name"><i class="fa-solid fa-droplet"></i><span>Ink</span></span><span class="el-meter-value">-</span></div>
+              <div class="el-meter-track"><div class="el-meter-fill"></div></div>
+            </div>
+            <div class="el-meter" id="el-meter-durability">
+              <div class="el-meter-head"><span class="el-meter-name"><i class="fa-solid fa-gear"></i><span>Condition</span></span><span class="el-meter-value">-</span></div>
+              <div class="el-meter-track"><div class="el-meter-fill"></div></div>
+            </div>
+          </div>
+
+          <div class="el-identity">
+            <div class="el-avatar"><i class="fa-solid fa-user"></i></div>
+            <div class="el-identity-text">
+              <div class="el-identity-name" id="el-player-name">-</div>
+              <div class="el-identity-meta" id="el-player-job">-</div>
+            </div>
+          </div>
+          <div class="el-storage" id="el-storage" data-tip=""><i class="fa-solid fa-database"></i><span id="el-storage-label">Database Storage</span></div>
+        </nav>
+
+        <main class="el-main">
+          <div class="el-strip el-hidden" id="el-strip">
+            <i class="fa-solid fa-print el-strip-icon"></i>
+            <span class="el-strip-text" id="el-strip-text">Printing</span>
+            <div class="el-progress"><div class="el-progress-fill" id="el-strip-fill"></div></div>
+            <span class="el-strip-pct" id="el-strip-pct">0%</span>
+          </div>
+          <div class="el-alerts el-hidden" id="el-alerts"></div>
+
+          <!-- Create -->
+          <section class="el-panel" data-panel="create">
+            <div id="el-create-pick" class="el-subview">
+              <div class="el-panel-head">
+                <div>
+                  <h2 class="el-panel-title">Create Document</h2>
+                  <p class="el-panel-sub">Choose a document type available on this printer.</p>
+                </div>
+                <div class="el-chips" id="el-category-chips"></div>
+              </div>
+              <div class="el-scroll" style="flex:1;">
+                <div class="el-template-grid" id="el-template-grid"></div>
+              </div>
+            </div>
+
+            <div id="el-create-edit" class="el-subview el-hidden">
+              <div class="el-panel-head">
+                <div style="display:flex;align-items:center;gap:12px;min-width:0;">
+                  <button class="el-btn el-btn-icon" id="el-editor-back" data-tip="Back to document types"><i class="fa-solid fa-arrow-left"></i></button>
+                  <div style="min-width:0;">
+                    <h2 class="el-panel-title" id="el-editor-title">Document</h2>
+                    <p class="el-panel-sub" id="el-editor-sub"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="el-editor">
+                <div class="el-card el-editor-form">
+                  <div class="el-editor-fields el-scroll" id="el-editor-fields"></div>
+                  <div class="el-editor-foot">
+                    <div class="el-cost-row" id="el-editor-cost"></div>
+                    <div class="el-actions">
+                      <div class="el-stepper" data-tip="Copies">
+                        <button id="el-copies-minus"><i class="fa-solid fa-minus"></i></button>
+                        <span id="el-copies-value">1 copy</span>
+                        <button id="el-copies-plus"><i class="fa-solid fa-plus"></i></button>
+                      </div>
+                      <div class="el-spacer"></div>
+                      <button class="el-btn el-btn-secondary" id="el-btn-save"><i class="fa-solid fa-floppy-disk"></i><span>Save</span></button>
+                      <button class="el-btn el-btn-primary" id="el-btn-save-print"><i class="fa-solid fa-print"></i><span>Save &amp; Print</span></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="el-card el-preview">
+                  <div class="el-preview-head">
+                    <span class="el-preview-title"><i class="fa-regular fa-eye"></i>Preview</span>
+                    <button class="el-btn el-btn-secondary el-btn-sm" id="el-btn-preview"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Generate Preview</span></button>
+                  </div>
+                  <div class="el-doc-frame" id="el-editor-preview"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Documents -->
+          <section class="el-panel" data-panel="documents">
+            <div class="el-panel-head">
+              <div>
+                <h2 class="el-panel-title">Saved Documents</h2>
+                <p class="el-panel-sub" id="el-docs-sub">Documents you issued, received or may access.</p>
+              </div>
+            </div>
+            <div class="el-docs">
+              <div class="el-card el-doc-list-card">
+                <div class="el-doc-filters">
+                  <div class="el-input-icon"><i class="fa-solid fa-magnifying-glass"></i><input class="el-input" id="el-doc-search" type="text" maxlength="64" placeholder="Search by title, reference or issuer"></div>
+                  <div class="el-select" id="el-doc-type-filter"></div>
+                </div>
+                <div class="el-doc-list el-scroll" id="el-doc-list"></div>
+              </div>
+              <div class="el-card el-doc-detail" id="el-doc-detail"></div>
+            </div>
+          </section>
+
+          <!-- Queue -->
+          <section class="el-panel" data-panel="queue">
+            <div class="el-panel-head">
+              <div>
+                <h2 class="el-panel-title">Print Queue</h2>
+                <p class="el-panel-sub" id="el-queue-sub">Live progress reported by the printer.</p>
+              </div>
+            </div>
+            <div class="el-scroll" style="flex:1;display:flex;flex-direction:column;gap:14px;" id="el-queue"></div>
+          </section>
+
+          <!-- Printer -->
+          <section class="el-panel" data-panel="printer">
+            <div class="el-panel-head">
+              <div>
+                <h2 class="el-panel-title">Printer Status</h2>
+                <p class="el-panel-sub">Supplies, condition and maintenance.</p>
+              </div>
+            </div>
+            <div class="el-scroll" style="flex:1;">
+              <div class="el-maint-grid" id="el-maint"></div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </section>
+  </div>
+
+  <!-- Document viewer (printed item) -->
+  <div class="el-overlay" id="el-viewer">
+    <section class="el-viewer" role="dialog" aria-modal="true" aria-labelledby="el-viewer-title">
+      <header class="el-header">
+        <div class="el-brand">
+          <div class="el-brand-mark">EL</div>
+          <div class="el-brand-text">
+            <span class="el-eyebrow" id="el-viewer-eyebrow">Printed Document</span>
+            <h1 class="el-page-title" id="el-viewer-title">Document</h1>
+          </div>
+        </div>
+        <div class="el-header-actions">
+          <button class="el-btn el-btn-icon" id="el-viewer-close" data-tip="Close (Esc)"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </header>
+      <div class="el-doc-frame" id="el-viewer-frame"></div>
+      <footer class="el-viewer-foot">
+        <span class="el-verify" id="el-verify"></span>
+        <div style="flex:1;"></div>
+        <button class="el-btn el-btn-secondary" id="el-viewer-show"><i class="fa-solid fa-hand-holding"></i><span>Show to Nearby Player</span></button>
+        <button class="el-btn el-btn-primary" id="el-viewer-done"><span>Done</span></button>
+      </footer>
+    </section>
+  </div>
+
+  <!-- Confirmation dialog -->
+  <div class="el-modal-backdrop" id="el-modal">
+    <div class="el-modal" role="alertdialog" aria-modal="true" aria-labelledby="el-modal-title">
+      <div class="el-modal-icon"><i class="fa-solid fa-circle-question" id="el-modal-icon"></i></div>
+      <h3 class="el-modal-title" id="el-modal-title">Are you sure?</h3>
+      <p class="el-modal-text" id="el-modal-text"></p>
+      <div class="el-modal-actions">
+        <button class="el-btn el-btn-ghost" id="el-modal-cancel"><span>Cancel</span></button>
+        <button class="el-btn el-btn-primary" id="el-modal-confirm"><span>Confirm</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="el-tooltip" id="el-tooltip"></div>
+
+  <script src="render.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
