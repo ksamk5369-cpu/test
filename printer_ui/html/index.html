@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Printer</title>
+  <!-- Fonts and icons are bundled locally: the UI works without internet access. -->
+  <link rel="stylesheet" href="vendor/manrope/manrope.css">
+  <link rel="stylesheet" href="vendor/fontawesome/css/fontawesome.min.css">
+  <link rel="stylesheet" href="vendor/fontawesome/css/solid.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Printer: create a print job -->
+  <div class="el-overlay" id="el-printer">
+    <section class="el-card el-printer" role="dialog" aria-modal="true" aria-labelledby="el-printer-title">
+      <header class="el-header">
+        <div class="el-brand-mark"><img src="hp.png" alt=""></div>
+        <div class="el-brand-text">
+          <span class="el-eyebrow">Printer</span>
+          <h1 class="el-title" id="el-printer-title">Print Document</h1>
+        </div>
+        <button class="el-btn el-btn-icon" type="button" id="el-printer-close" title="Close (Esc)"><i class="fa-solid fa-xmark"></i></button>
+      </header>
+
+      <form class="el-body" id="el-form" novalidate autocomplete="off">
+        <div class="el-field" id="el-field-name">
+          <label class="el-label" for="filename"><span>File name</span><em class="el-counter" id="el-name-count">0/20</em></label>
+          <div class="el-input-icon">
+            <i class="fa-solid fa-file-lines"></i>
+            <input id="filename" class="el-input" type="text" maxlength="20" placeholder="e.g. Business card">
+          </div>
+          <span class="el-field-error"><i class="fa-solid fa-circle-exclamation"></i>Enter a file name.</span>
+        </div>
+
+        <div class="el-field" id="el-field-url">
+          <label class="el-label" for="fileurl"><span>Image URL</span><em class="el-hint">PNG / JPG</em></label>
+          <div class="el-input-icon">
+            <i class="fa-solid fa-link"></i>
+            <input id="fileurl" class="el-input" type="url" placeholder="https://...">
+          </div>
+          <span class="el-field-error"><i class="fa-solid fa-circle-exclamation"></i>Enter a valid http(s) link.</span>
+        </div>
+
+        <div class="el-preview" id="el-preview" data-state="empty">
+          <img id="el-preview-img" alt="">
+          <div class="el-preview-msg" data-for="empty"><i class="fa-solid fa-image"></i><span>Preview appears here</span></div>
+          <div class="el-preview-msg" data-for="loading"><div class="el-spinner"></div><span>Loading image</span></div>
+          <div class="el-preview-msg" data-for="error"><i class="fa-solid fa-triangle-exclamation"></i><span>Couldn't load this image</span></div>
+          <span class="el-preview-size" id="el-preview-size"></span>
+        </div>
+
+        <footer class="el-foot">
+          <div class="el-stepper" title="Copies">
+            <button type="button" id="el-copies-minus" aria-label="Fewer copies"><i class="fa-solid fa-minus"></i></button>
+            <input id="amountpapers" type="number" min="1" max="50" value="1" aria-label="Copies">
+            <button type="button" id="el-copies-plus" aria-label="More copies"><i class="fa-solid fa-plus"></i></button>
+          </div>
+          <span class="el-copies-label">copies</span>
+          <div class="el-spacer"></div>
+          <button class="el-btn el-btn-ghost" type="button" id="el-cancel">Cancel</button>
+          <button class="el-btn el-btn-primary" type="submit" id="el-print"><i class="fa-solid fa-print"></i><span>Print</span></button>
+        </footer>
+      </form>
+    </section>
+  </div>
+
+  <!-- Document viewer: a printed item -->
+  <div class="el-overlay" id="el-viewer">
+    <section class="el-viewer" role="dialog" aria-modal="true" aria-label="Document">
+      <img class="document-image" id="el-viewer-img" alt="">
+      <button class="el-btn el-btn-icon el-viewer-close" type="button" id="el-viewer-close" title="Close (Esc)"><i class="fa-solid fa-xmark"></i></button>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
