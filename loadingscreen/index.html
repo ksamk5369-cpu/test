@@ -44,11 +44,17 @@
             <div class="music-container">
                 <div class="music-info">
                     <div class="music-time">
-                        <div>
-                            <div id="music-title" class="music-title"></div>
-                            <div id="music-artist" class="music-artist"></div>
-                         </div>
-                       <div id="music-time" class="df-aife"></div>
+                        <div class="music-head">
+                            <div class="music-disc"><i class="bi bi-music-note-beamed"></i></div>
+                            <div>
+                                <div id="music-title" class="music-title"></div>
+                                <div id="music-artist" class="music-artist"></div>
+                            </div>
+                        </div>
+                        <div class="music-side">
+                            <div class="eq"><span></span><span></span><span></span><span></span></div>
+                            <div id="music-time" class="df-aife"></div>
+                        </div>
                    </div>
                    <div id="music-bar-card" class="music-bar">
                        <div id="music-bar" class="music-bar-fill"></div>
@@ -82,7 +88,13 @@
             </div>
         </div>
 
-        <div class="right-bar"></div>
+        <div class="right-bar">
+            <div></div>
+            <div class="clock-card">
+                <div id="clock-time" class="clock-time"></div>
+                <div id="clock-date" class="clock-date"></div>
+            </div>
+        </div>
 
         <div class="top-bar">
             <div class="buttons-container">
@@ -104,7 +116,15 @@
     <script src="main.js" type="text/javascript"></script>
     <script>
         // main.js hides the socials when the overlay is hidden; hide the menu buttons with them
-        $(document).on('click', '#hide-overlay', function () { $('.buttons-container').fadeToggle(500); });
+        $(document).on('click', '#hide-overlay', function () { $('.buttons-container, .clock-card, .music-container').fadeToggle(500); });
+
+        function updateClock() {
+            var now = new Date();
+            $('#clock-time').text(now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }));
+            $('#clock-date').text(now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }));
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
     </script>
 </body>
 </html>

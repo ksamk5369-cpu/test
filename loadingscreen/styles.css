@@ -350,3 +350,148 @@ hr { border: 0; height: 1px; background-color: rgba(255, 255, 255, .08); opacity
 li { background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .04); border-radius: .45rem; color: var(--muted); }
 li.green { background: var(--wsbcolor); color: #fff; box-shadow: 0 0 .8rem var(--accent-glow); }
 .popover-header { background: #111; border: 1px solid var(--glass-border); border-radius: .5rem; color: #fff; }
+
+/* ---------- Ambient glow ---------- */
+@keyframes breathe { 0%, 100% { opacity: .6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes hero-in { from { opacity: 0; transform: translate(-50%, -50%) scale(.94); } to { opacity: 1; transform: translate(-50%, -55%) scale(1); } }
+@keyframes eq { 0%, 100% { height: 25%; } 50% { height: 100%; } }
+
+.overlay::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    width: 50rem;
+    height: 50rem;
+    margin: -25rem 0 0 -25rem;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+    background: radial-gradient(circle, rgba(205, 101, 41, .1), transparent 62%);
+    animation: breathe 7s ease-in-out infinite;
+}
+
+/* ---------- Hero (logo + server name in the center) ---------- */
+.logo-content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -55%);
+    flex-direction: column;
+    text-align: center;
+    animation: hero-in .9s cubic-bezier(.2, .8, .2, 1) both;
+}
+.logo-content::before {
+    content: '';
+    position: absolute;
+    top: -1.6rem;
+    left: 50%;
+    width: 11.2rem;
+    height: 11.2rem;
+    margin-left: -5.6rem;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0 55%, rgba(205, 101, 41, .2) 70%, var(--wsbcolor) 98%, transparent);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+    animation: spin 5s linear infinite;
+}
+.logo-content::after {
+    content: '';
+    position: absolute;
+    top: -1.6rem;
+    left: 50%;
+    width: 11.2rem;
+    height: 11.2rem;
+    margin-left: -5.6rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, .06);
+}
+.logo {
+    position: relative;
+    z-index: 1;
+    width: 8rem;
+    height: 8rem;
+    margin: 0 0 3rem;
+    filter: drop-shadow(0 0 2rem var(--accent-glow));
+}
+.logo-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: .08rem;
+    line-height: 1.1;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #fff 30%, #f3b48d);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.logo-description {
+    max-width: 32rem;
+    margin: .9rem auto 0;
+    font-size: .9rem;
+    letter-spacing: .05rem;
+    color: var(--muted);
+}
+.logo-description::before {
+    content: '';
+    display: block;
+    width: 3rem;
+    height: 2px;
+    margin: 0 auto .9rem;
+    border-radius: 2px;
+    background: var(--wsbcolor);
+    box-shadow: 0 0 .8rem var(--accent-glow);
+}
+
+/* ---------- Music: disc + equalizer ---------- */
+.music-head { display: flex; align-items: center; gap: .7rem; min-width: 0; }
+.music-disc {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    color: #fff;
+    font-size: .95rem;
+    background:
+        radial-gradient(circle, #0d0d0d 0 18%, transparent 19%),
+        conic-gradient(from 0deg, #cd6529, #7a3612, #cd6529, #f08a4b, #cd6529);
+    box-shadow: 0 0 1rem rgba(205, 101, 41, .35);
+    animation: spin 6s linear infinite;
+}
+.music-disc i { font-size: .7rem; opacity: 0; }
+.music-time { align-items: center; }
+.music-side { display: flex; flex-direction: column; align-items: flex-end; gap: .35rem; }
+.eq { display: flex; align-items: flex-end; gap: 2px; height: .9rem; }
+.eq span { width: 3px; height: 30%; border-radius: 2px; background: var(--wsbcolor); animation: eq .9s ease-in-out infinite; }
+.eq span:nth-child(2) { animation-delay: -.3s; }
+.eq span:nth-child(3) { animation-delay: -.6s; }
+.eq span:nth-child(4) { animation-delay: -.15s; }
+/* freeze disc + equalizer when paused */
+.music-container:has(#pause-music .bi-play) .eq span,
+.music-container:has(#pause-music .bi-play) .music-disc { animation-play-state: paused; }
+
+/* ---------- Clock card (bottom right) ---------- */
+.clock-card {
+    width: 19rem;
+    padding: 1rem 1.2rem;
+    text-align: right;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    backdrop-filter: blur(.75rem);
+    box-shadow: 0 .75rem 2rem rgba(0, 0, 0, .5);
+    animation: fade-up .6s .15s ease both;
+}
+.clock-time { font-size: 2.3rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.clock-date {
+    margin-top: .5rem;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .12rem;
+    text-transform: uppercase;
+    color: var(--wsbcolor);
+}
