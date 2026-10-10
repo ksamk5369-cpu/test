@@ -340,16 +340,6 @@ hr { border: 0; height: 1px; background-color: rgba(255, 255, 255, .08); opacity
 .swiper-pagination-bullet { background: rgba(255, 255, 255, .2); transition: width .25s; }
 .swiper-pagination-bullet-active { width: 1.6rem; border-radius: 999px; }
 
-/* keyboard */
-.keyboard {
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    border-radius: 1rem;
-    padding: 1.2rem;
-}
-li { background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .04); border-radius: .45rem; color: var(--muted); }
-li.green { background: var(--wsbcolor); color: #fff; box-shadow: 0 0 .8rem var(--accent-glow); }
-.popover-header { background: #111; border: 1px solid var(--glass-border); border-radius: .5rem; color: #fff; }
 
 /* ---------- Ambient glow ---------- */
 @keyframes breathe { 0%, 100% { opacity: .6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
